@@ -1,12 +1,14 @@
+import com.vanniktech.maven.publish.SonatypeHost
 
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose)
+    alias(libs.plugins.publish)
 }
 
 android {
-    namespace = "com.github.veselyjan92.pdfviewer"
+    namespace = "io.github.veselyjan92.pdfviewer"
     compileSdk = 35
 
     defaultConfig {
@@ -15,7 +17,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
         }
     }
     compileOptions {
@@ -34,4 +36,34 @@ dependencies {
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.ui.tooling.preview)
     debugImplementation(libs.androidx.compose.ui.tooling)
+}
+
+mavenPublishing {
+    coordinates("io.github.veselyjan92", "pdfviewer", libs.versions.libVersion.toString())
+
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)
+
+    signAllPublications()
+
+    pom {
+        name.set("Compose PDF Viewer")
+        description.set("Compose PDF Viewer, backwards compatible, anntations, zoom, scroll")
+        inceptionYear.set("2024")
+        url.set("https://github.com/VeselyJan92/PDFViewer")
+        licenses {
+            license {
+                name.set("MIT License")
+                url.set("https://opensource.org/licenses/MIT")
+            }
+        }
+        developers {
+            developer {
+                name.set("Jan Veselý")
+                url.set("jan.vesely92@gmail.com")
+            }
+        }
+        scm {
+            url.set("https://github.com/VeselyJan92/PDFViewer")
+        }
+    }
 }

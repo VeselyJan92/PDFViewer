@@ -1,4 +1,4 @@
-package com.github.veselyjan92.pdfviewer
+package io.github.veselyjan92.pdfviewer
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -58,6 +58,5 @@ private fun PdfViewerPdfiumRendererPreview() {
 
     PDFViewer(
         state = state,
-        modifier = Modifier.fillMaxSize()
     )
 }

@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.github.veselyjan92.pdfviewer"
+    namespace = "io.github.veselyjan92.pdfviewer"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.github.veselyjan92.pdfviewer.app"
+        applicationId = "io.github.veselyjan92.pdfviewer.app"
         minSdk = 26
         targetSdk = 35
         versionCode = 1

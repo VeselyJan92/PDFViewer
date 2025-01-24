@@ -1,4 +1,4 @@
-package com.github.veselyjan92.pdfviewer
+package io.github.veselyjan92.pdfviewer
 
 import android.graphics.Bitmap
 

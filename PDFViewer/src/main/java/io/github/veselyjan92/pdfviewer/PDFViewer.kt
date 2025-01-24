@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalFoundationApi::class)
 
-package com.github.veselyjan92.pdfviewer
+package io.github.veselyjan92.pdfviewer
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -57,7 +57,7 @@ import kotlin.math.abs
 @Composable
 fun PDFViewer(
     state: PDFViewerState,
-    modifier: Modifier,
+    modifier: Modifier = Modifier.fillMaxSize(),
     verticalSpacing: Dp = 4.dp,
     contentPadding: PaddingValues = PaddingValues(4.dp),
     pageBox: @Composable (page: @Composable () -> Unit) -> Unit = { page ->
