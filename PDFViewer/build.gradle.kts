@@ -30,8 +30,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.pdfiumandroid)
-
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.ui.tooling.preview)
