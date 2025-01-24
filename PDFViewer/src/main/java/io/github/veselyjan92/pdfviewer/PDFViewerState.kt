@@ -34,7 +34,7 @@ class PDFViewerState(val pdfRender: PDFViewerRender) {
     internal var translateX: Animatable<Float, AnimationVector1D> = Animatable(0f)
     internal var translateY: Animatable<Float, AnimationVector1D> = Animatable(0f)
 
-    class Page(val index: Int, val ration: Float)
+    class Page(val index: Int, val ratio: Float)
 
     suspend fun loadPages() {
         pages.value = pdfRender.loadPDF()

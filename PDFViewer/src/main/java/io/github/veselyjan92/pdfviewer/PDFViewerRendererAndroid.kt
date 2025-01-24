@@ -27,7 +27,7 @@ class PdfRenderAndroid(private val file: File) : PDFViewerRender {
         List(renderer.pageCount) {
             PDFViewerState.Page(
                 index = it,
-                ration = renderer.openPage(it).use { page ->
+                ratio = renderer.openPage(it).use { page ->
                     page.height.toFloat() / page.width.toFloat()
                 }
             )
@@ -42,7 +42,7 @@ class PdfRenderAndroid(private val file: File) : PDFViewerRender {
                     ParcelFileDescriptor.MODE_READ_ONLY
                 )
             ).openPage(page.index).use { currentPage ->
-                val height = (page.ration * viewportWidth).toInt()
+                val height = (page.ratio * viewportWidth).toInt()
                 val newBitmap = Bitmap.createBitmap(viewportWidth, height, Bitmap.Config.ARGB_8888)
                 currentPage.render(newBitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
                 newBitmap

@@ -28,7 +28,7 @@ class PdfRenderPdfium(private val fileDescriptor: ParcelFileDescriptor) : PDFVie
         return List(document.getPageCount()) {
             PDFViewerState.Page(
                 index = it,
-                ration = document.openPage(it).use { page ->
+                ratio = document.openPage(it).use { page ->
                     page.getPageHeightPoint().toFloat() / page.getPageWidthPoint().toFloat()
                 }
             )
@@ -37,7 +37,7 @@ class PdfRenderPdfium(private val fileDescriptor: ParcelFileDescriptor) : PDFVie
 
     override suspend fun loadPage(page: PDFViewerState.Page, viewportWidth: Int): Bitmap {
         document.openPage(page.index).use { currentPage ->
-            val height = (page.ration * viewportWidth).toInt()
+            val height = (page.ratio * viewportWidth).toInt()
             val newBitmap = Bitmap.createBitmap(viewportWidth, height, Bitmap.Config.ARGB_8888)
             currentPage.renderPageBitmap(newBitmap, 0, 0, viewportWidth, height, renderAnnot = true)
 

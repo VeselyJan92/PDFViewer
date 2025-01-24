@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.layout.LazyLayout
 import androidx.compose.foundation.lazy.layout.LazyLayoutItemProvider
 import androidx.compose.runtime.Composable
@@ -126,18 +127,8 @@ private fun PDF(
 
     var scale by remember { mutableFloatStateOf(1f) }
 
-    LazyLayout(
-        modifier = modifier
-            .graphicsLayer {
-                scaleX = scale
-                scaleY = scale
-            }
-            .clipToBounds()
-            .pointerInput(Unit) {
-                detectZoom { zoom ->
-                    scale = (scale * zoom).coerceIn(1f, 2f)
-                }
-            }
+    Box(
+        modifier = modifier.padding(30.dp)
             .pointerInput(Unit) {
                 detectTapGestures(
                     onDoubleTap = { tapCenter ->
@@ -153,7 +144,7 @@ private fun PDF(
                             var velocity = velocityTracker.calculateVelocity()
 
                             launch {
-                                state.flingBy(velocity)
+                                state.flingBy(velocity / scale)
                             }
                         },
                         onDrag = { change, dragAmount ->
@@ -161,86 +152,99 @@ private fun PDF(
                             velocityTracker.addPosition(change.uptimeMillis, change.position)
 
                             launch {
-                                state.dragBy(dragAmount)
+                                state.dragBy(dragAmount / scale)
                             }
                         }
                     )
                 }
+            }
+            .pointerInput(Unit) {
+                detectZoom { zoom ->
+                    scale = (scale * zoom).coerceIn(1f, 2f)
+                }
+            }
+            .clipToBounds()
+    ) {
+        LazyLayout(
+            modifier = modifier.graphicsLayer {
+                scaleX = scale
+                scaleY = scale
             },
-        itemProvider = { itemProvider },
-    ) { constraints ->
-        val viewport = Size(
-            constraints.maxWidth.toFloat(),
-            constraints.maxHeight.toFloat()
-        )
-
-        var cumulativePageYCoordinate = contentPaddingPx.top.toFloat()
-
-        data class PageLocation(
-            val index: Int,
-            val x: Float,
-            val y: Float,
-            val width: Float,
-            val height: Float,
-        )
-
-        val placeables = state.pages.value.mapIndexed { index, page ->
-            //Calculate page coordinates
-
-            val width = viewport.width - contentPaddingPx.left - contentPaddingPx.right
-            val height = page.ration * width
-
-            val item = PageLocation(
-                index = index,
-                x = contentPaddingPx.left,
-                y = cumulativePageYCoordinate,
-                width = width,
-                height = height
+            itemProvider = { itemProvider },
+        ) { constraints ->
+            val viewport = Size(
+                constraints.maxWidth.toFloat(),
+                constraints.maxHeight.toFloat()
             )
 
-            cumulativePageYCoordinate += height + verticalSpacingPx
+            var cumulativePageYCoordinate = contentPaddingPx.top.toFloat()
 
-            item
-        }.filter {
-            //Filter out pages that are not visible
-
-            it.y + it.height > state.translateY.value - 0.5 * viewport.height && it.y < state.translateY.value + 1.5 * viewport.height
-        }.map { page ->
-            //Translate page coordinates to scroll and drag offset
-
-            page.copy(
-                x = page.x - state.translateX.value,
-                y = page.y - state.translateY.value,
+            data class PageLocation(
+                val index: Int,
+                val x: Float,
+                val y: Float,
+                val width: Float,
+                val height: Float,
             )
-        }.map { page ->
-            //map placeable base on fixed size
 
-            measure(
-                page.index,
-                Constraints.Companion.fixed(
-                    page.width.toInt(),
-                    page.height.toInt()
+            val placeables = state.pages.value.mapIndexed { index, page ->
+                //Calculate page coordinates
+
+                val width = viewport.width - contentPaddingPx.left - contentPaddingPx.right
+                val height = page.ratio * width
+
+                val item = PageLocation(
+                    index = index,
+                    x = contentPaddingPx.left,
+                    y = cumulativePageYCoordinate,
+                    width = width,
+                    height = height
                 )
-            ) to Offset(page.x, page.y)
-        }
 
-        //Update zoom bounds
-        val shiftX = (viewport.width / 4f) * (1 - scale)
-        val shiftY = viewport.height * ((1 / scale) - 1) / 2.0f
+                cumulativePageYCoordinate += height + verticalSpacingPx
 
-        state.updateBounds(
-            left = shiftX,
-            top = shiftY,
-            right = -shiftX,
-            bottom = cumulativePageYCoordinate - verticalSpacingPx + contentPaddingPx.bottom - viewport.height - shiftY
-        )
+                item
+            }.filter {
+                //Filter out pages that are not visible
 
-        layout(constraints.maxWidth, constraints.maxHeight) {
-            placeables.forEach { (itemPlaceables, position) ->
-                itemPlaceables.first().placeRelative(
-                    x = position.x.toInt(),
-                    y = position.y.toInt(),
+                it.y + it.height > state.translateY.value - 0.5 * viewport.height && it.y < state.translateY.value + 1.5 * viewport.height
+            }.map { page ->
+                //Translate page coordinates to scroll and drag offset
+
+                page.copy(
+                    x = page.x - state.translateX.value,
+                    y = page.y - state.translateY.value,
                 )
+            }.map { page ->
+                //map placeable base on fixed size
+
+                measure(
+                    page.index,
+                    Constraints.Companion.fixed(
+                        page.width.toInt(),
+                        page.height.toInt()
+                    )
+                ) to Offset(page.x, page.y)
+            }
+
+            //Update zoom bounds
+            val shiftX = (viewport.width / 4f) * (1 - scale)
+            val shiftY = viewport.height * ((1 / scale) - 1) / 2.0f
+
+            state.updateBounds(
+                left = shiftX,
+                top = shiftY,
+                right = -shiftX,
+                bottom = cumulativePageYCoordinate - verticalSpacingPx + contentPaddingPx.bottom - viewport.height - shiftY
+            )
+
+            layout(constraints.maxWidth, constraints.maxHeight) {
+                placeables.forEach { (itemPlaceables, position) ->
+                    itemPlaceables.first().placeRelative(
+                        x = position.x.toInt(),
+                        y = position.y.toInt(),
+                    )
+                }
             }
         }
     }
