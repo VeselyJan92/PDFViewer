@@ -38,7 +38,7 @@ dependencies {
 }
 
 mavenPublishing {
-    coordinates("io.github.veselyjan92", "pdfviewer-pdfium",  libs.versions.libVersion.toString())
+    coordinates("io.github.veselyjan92", "pdfviewer-pdfium",  libs.versions.libVersion.get())
 
     publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)
 
