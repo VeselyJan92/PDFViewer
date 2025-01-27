@@ -128,7 +128,7 @@ private fun PDF(
     var scale by remember { mutableFloatStateOf(1f) }
 
     Box(
-        modifier = modifier.padding(30.dp)
+        modifier = modifier
             .pointerInput(Unit) {
                 detectTapGestures(
                     onDoubleTap = { tapCenter ->
