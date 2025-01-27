@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.layout.LazyLayout
 import androidx.compose.foundation.lazy.layout.LazyLayoutItemProvider
 import androidx.compose.runtime.Composable
@@ -235,7 +234,7 @@ private fun PDF(
                 left = shiftX,
                 top = shiftY,
                 right = -shiftX,
-                bottom = cumulativePageYCoordinate - verticalSpacingPx + contentPaddingPx.bottom - viewport.height - shiftY
+                bottom = maxOf(cumulativePageYCoordinate - verticalSpacingPx + contentPaddingPx.bottom - viewport.height - shiftY, 0f)
             )
 
             layout(constraints.maxWidth, constraints.maxHeight) {
