@@ -10,7 +10,7 @@
 This renderer uses [PdfiumAndroidKt](https://github.com/johngray1965/PdfiumAndroidKt) and is backwards compatible but app needs to bundle `PDFium` native libraries. 
 
 ```
-implementation("io.github.veselyjan92:pdfviewer-pdfium:1.0.4")
+implementation("io.github.veselyjan92:pdfviewer-pdfium:1.0.5")
 ```
 ```
 val state = rememberPDFViewerPdfiumState(file)
@@ -24,7 +24,7 @@ PDFViewer(
 This renderer uses [PdfRenderer](https://developer.android.com/reference/android/graphics/pdf/PdfRenderer). There are some limitations such as lack of support for annotated PDFs on Android api levels less than 31. [Read more here](https://issuetracker.google.com/issues/365693423)
 
 ```
-implementation("io.github.veselyjan92:pdfviewer:1.0.4")
+implementation("io.github.veselyjan92:pdfviewer:1.0.5")
 ```
 ```
 val state = rememberPDFViewerAndroidState(file)
