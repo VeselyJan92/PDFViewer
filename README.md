@@ -20,7 +20,7 @@ PDFViewer(
 )
 ```
 
-### PdfiumAndroidKt renderer
+### Android renderer
 This renderer uses [PdfRenderer](https://developer.android.com/reference/android/graphics/pdf/PdfRenderer). There are some limitations such as lack of support for annotated PDFs on Android api levels less than 31. [Read more here](https://issuetracker.google.com/issues/365693423)
 
 ```
